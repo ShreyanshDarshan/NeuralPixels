@@ -25,18 +25,17 @@ pos_encode.encode(x)
 dim = 10
 input_size = 2 * (2 * dim)
 output_size = 1
-hidden_layers = [32] * 4
+hidden_layers = [128] * 2
 layers = [input_size] + hidden_layers + [output_size]
 
 # training params
 batch_size = (128)**2
-num_epochs = 10
-learning_rate = 0.001
-image_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                          'dataset', 'neupix', 'apple_cropped.png')
+num_epochs = 300
+learning_rate = 0.01
+image_path = os.path.join(os.path.dirname(__file__), 'data', 'apple_128.png')
 
 train_dataset = ImageDataset(image_path)
-# train_dataset.visualize()
+train_dataset.visualize()
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 train_dataset[0]
 
@@ -44,6 +43,7 @@ train_dataset[0]
 # test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
 
 model = NeuPix(layers).to(device)
+utils.plot_output(model)
 
 # utils.check_accuracy(train_loader, model)
 
@@ -58,9 +58,6 @@ for epoch in tqdm(range(num_epochs)):
 
         data = torch.reshape(data, (data.shape[0], -1))
         target = torch.reshape(target, (target.shape[0], 1))
-
-        if (batch_idx == 0):
-            print(data.shape)
 
         preds = model(data)
 

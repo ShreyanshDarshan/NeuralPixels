@@ -9,7 +9,7 @@ def plot_output(model: torch.nn.Module):
     device = torch.device(
         'cuda' if next(model.parameters()).is_cuda else 'cpu')
     model.eval()
-    res = 512
+    res = 128
     output_image = None
     with torch.no_grad():
         xs = torch.linspace(0, 1, steps=res).to(device)
@@ -44,8 +44,6 @@ def check_accuracy(loader: DataLoader, model: torch.nn.Module):
 
             data = torch.reshape(data, (data.shape[0], -1))
             target = torch.reshape(target, (target.shape[0], 1))
-            if (batch_idx == 0):
-                print(data.shape)
 
             preds = model(data)
             mse += torch.mean(torch.square(preds - target))

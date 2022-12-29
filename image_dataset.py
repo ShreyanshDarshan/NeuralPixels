@@ -18,12 +18,12 @@ class ImageDataset(Dataset):
         y_coord = index // self.image.shape[1]
         x_coord = index % self.image.shape[1]
         grey_color = torch.tensor(self.image[y_coord, x_coord],
-                                  dtype=torch.float32)
+                                  dtype=torch.float32) * 2.0 - 1.0
         coords = torch.tensor([x_coord, y_coord]) / torch.tensor(
             [self.image.shape[1], self.image.shape[0]])
-        coords = coords.type(torch.float32)
+        coords = coords.type(torch.float32) * 2.0 - 1.0
         return (pos_encode.encode(coords), grey_color)
 
     def visualize(self):
-        io.imshow(self.image)
+        io.imshow(self.image * 2 - 1)
         io.show()

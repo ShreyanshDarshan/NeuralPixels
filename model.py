@@ -17,9 +17,10 @@ class NeuPix(nn.Module):
         super(NeuPix, self).__init__()
         # use torch.nn.sequential
         self.layers = []
-        for i in range(len(layers) - 1):
+        for i in range(len(layers) - 2):
             self.layers.append(nn.Linear(layers[i], layers[i + 1]))
             self.layers.append(nn.ReLU())
+        self.layers.append(nn.Linear(layers[-2], layers[-1]))
         self.sequential = nn.Sequential(*self.layers)
 
     def forward(self, x):
