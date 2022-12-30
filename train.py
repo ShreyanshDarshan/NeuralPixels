@@ -15,21 +15,15 @@ import positional_encoding as pos_encode
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# create a random tensor of size 2
-x = torch.rand(3, 3, 2)
-print(x)
-pos_encode.encode(x)
-# sys.exit(0)
-
 # model params
-dim = 10
+dim = 5
 input_size = 2 * (2 * dim)
 output_size = 1
 hidden_layers = [128] * 2
 layers = [input_size] + hidden_layers + [output_size]
 
 # training params
-batch_size = (128)**2
+batch_size = (256)**2
 num_epochs = 300
 learning_rate = 0.01
 image_path = os.path.join(os.path.dirname(__file__), 'data', 'apple_128.png')
@@ -39,13 +33,8 @@ train_dataset.visualize()
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 train_dataset[0]
 
-# test_dataset = ImageDataset()
-# test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
-
-model = NeuPix(layers).to(device)
+model = NeuPix(layers, dim).to(device)
 utils.plot_output(model)
-
-# utils.check_accuracy(train_loader, model)
 
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
@@ -70,4 +59,3 @@ for epoch in tqdm(range(num_epochs)):
 
 utils.check_accuracy(train_loader, model)
 utils.plot_output(model)
-# check_accuracy(test_loader, model)

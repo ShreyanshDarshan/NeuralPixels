@@ -9,13 +9,17 @@ from dataset import ImageDataset
 import os, sys
 import numpy as np
 import skimage.io as io
-
+import positional_encoding as pos_encode
 
 class NeuPix(nn.Module):
 
-    def __init__(self, layers):
+    def __init__(self, layers, encoding_dim=10):
         super(NeuPix, self).__init__()
-        # use torch.nn.sequential
+
+        if layers[0] % 2*encoding_dim != 0:
+            raise ValueError("Input size must be a multiple of 2*encoding_dim")
+        self.encoding_dim = encoding_dim
+
         self.layers = []
         for i in range(len(layers) - 2):
             self.layers.append(nn.Linear(layers[i], layers[i + 1]))
@@ -24,5 +28,6 @@ class NeuPix(nn.Module):
         self.sequential = nn.Sequential(*self.layers)
 
     def forward(self, x):
-        out = self.sequential(x)
+        encoded = pos_encode.encode(x, self.encoding_dim)
+        out = self.sequential(encoded)
         return out

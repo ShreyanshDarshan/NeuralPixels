@@ -14,12 +14,10 @@ def plot_output(model: torch.nn.Module):
     with torch.no_grad():
         xs = torch.linspace(0, 1, steps=res).to(device)
         ys = torch.linspace(0, 1, steps=res).to(device)
-
-        # grid_x, grid_y = torch.meshgrid(xs, ys)
-
         grid = torch.cartesian_prod(xs, ys)
-        encoded_grid = pos_encode.encode(grid)
-        vals = model(encoded_grid)
+
+        vals = model(grid)
+
         output_image = torch.reshape(vals,
                                      (res, res)).cpu().numpy()
 

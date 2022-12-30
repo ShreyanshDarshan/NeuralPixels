@@ -9,6 +9,11 @@ class ImageDataset(Dataset):
 
     def __init__(self, image_path):
         self.image = io.imread(image_path, True)
+        if self.image is None:
+            raise ValueError("Image not found")
+        else:
+            print ("Image loaded. Image shape: ", self.image.shape)
+
         self.image = self.image * 2.0 - 1.0
 
         self.data = torch.tensor(self.image, dtype=torch.float32)
@@ -16,21 +21,13 @@ class ImageDataset(Dataset):
 
         xs = torch.linspace(0, 1, steps=self.image.shape[1])
         ys = torch.linspace(0, 1, steps=self.image.shape[0])
-        grid = torch.cartesian_prod(xs, ys)
-        self.encoded = pos_encode.encode(grid)
-        self.encoded = self.encoded.reshape(-1, 40)
-        print  ("encoded shape ", self.encoded.shape)
+        self.grid = torch.cartesian_prod(xs, ys).reshape(-1, 2)
 
     def __len__(self):
-        return self.image.size
+        return self.data.size(0)
 
     def __getitem__(self, index):
-        # y_coord = index // self.image.shape[1]
-        # x_coord = index % self.image.shape[1]
-        # coords = torch.tensor([x_coord, y_coord]) / torch.tensor(
-        #     [self.image.shape[1], self.image.shape[0]])
-        # coords = coords.type(torch.float32) * 2.0 - 1.0
-        return (self.encoded[index], self.data[index])
+        return (self.grid[index], self.data[index])
 
     def visualize(self):
         io.imshow(self.image * 2 - 1)
