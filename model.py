@@ -11,12 +11,13 @@ import numpy as np
 import skimage.io as io
 import positional_encoding as pos_encode
 
+
 class NeuPix(nn.Module):
 
     def __init__(self, layers, encoding_dim=10):
         super(NeuPix, self).__init__()
 
-        if layers[0] % 2*encoding_dim != 0:
+        if layers[0] % 2 * encoding_dim != 0:
             raise ValueError("Input size must be a multiple of 2*encoding_dim")
         self.encoding_dim = encoding_dim
 

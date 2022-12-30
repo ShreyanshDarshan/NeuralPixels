@@ -11,30 +11,30 @@ import sys
 # import numpy as np
 from model import NeuPix
 import utils
-import positional_encoding as pos_encode
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # model params
-dim = 5
+dim = 30
 input_size = 2 * (2 * dim)
 output_size = 1
-hidden_layers = [128] * 2
+hidden_layers = [128] * 5
 layers = [input_size] + hidden_layers + [output_size]
 
 # training params
 batch_size = (256)**2
-num_epochs = 300
-learning_rate = 0.01
+num_epochs = 400
+learning_rate = 0.001
 image_path = os.path.join(os.path.dirname(__file__), 'data', 'apple_128.png')
 
 train_dataset = ImageDataset(image_path)
-train_dataset.visualize()
+utils.draw(train_dataset.get_image())
+image_resolution = train_dataset.get_image_resolution()
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 train_dataset[0]
 
 model = NeuPix(layers, dim).to(device)
-utils.plot_output(model)
+utils.draw(utils.predict_image(model))
 
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
@@ -57,5 +57,8 @@ for epoch in tqdm(range(num_epochs)):
 
         optimizer.step()
 
+    if epoch % 20 == 0:
+        utils.draw_non_blocking(utils.predict_image(model, image_resolution))
+
 utils.check_accuracy(train_loader, model)
-utils.plot_output(model)
+utils.draw(utils.predict_image(model))
