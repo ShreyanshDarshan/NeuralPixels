@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 # import torchvision.transforms as transforms
 from tqdm import tqdm
-from image_dataset import ImageDataset
+from dataset import ImageDataset
 import os
 import sys
 # import numpy as np

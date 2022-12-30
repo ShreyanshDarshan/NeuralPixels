@@ -21,7 +21,7 @@ def plot_output(model: torch.nn.Module):
         encoded_grid = pos_encode.encode(grid)
         vals = model(encoded_grid)
         output_image = torch.reshape(vals,
-                                     (res, res)).cpu().numpy().transpose()
+                                     (res, res)).cpu().numpy()
 
     io.imshow(output_image)
     io.show()
